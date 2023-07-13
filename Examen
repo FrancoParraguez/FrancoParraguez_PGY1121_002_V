@@ -1,0 +1,197 @@
+#Se declaran las listas
+from datetime import datetime
+entradas_platinum = [""] * 20
+entradas_gold = [""] * 30
+entradas_silver = [""] * 50
+asistentes = []
+ganancias_platinum = 0
+ganancias_gold = 0
+ganancias_silver = 0
+contador_platinum = 0
+contador_gold = 0
+contador_silver = 0
+
+
+#print de menu
+def mostrar_menu():
+  print()
+  print("\n------MENU------")
+  print("1) Comprar Entradas")
+  print("2) Mostrar Ubicaciones Disponibles")
+  print("3) Ver Listado Asistentes")
+  print("4) Mostrar Ganancias Totales")
+  print("5) Salir")
+
+def mostrar_ubicaciones_disponibles():
+  print()
+  #Lista Vip
+  for repeticion in range(len(entradas_platinum)):
+    if(entradas_platinum[repeticion]==""):
+      print(repeticion+1, end=" ")
+    else:
+      print("X",end=" ")
+    if (repeticion + 1) % 10 == 0: #Luego de hacer el print del numero o la X va a consultar si "repetición+1" es divisible por 10 (con el operador módulo, en ese caso printeará un salto y continuará con el código hasta que se cumpla el requisito del for
+      print()
+
+  #Lista Normal
+  for repeticion in range(len(entradas_gold)):
+    if(entradas_gold[repeticion]==""):
+      print(repeticion+21, end=" ")
+    else:
+      print("X",end=" ")
+    if (repeticion + 1) % 10 == 0:
+      print()
+
+  #Lista Economica
+  for repeticion in range(len(entradas_silver)):
+    if(entradas_silver[repeticion]==""):
+      print(repeticion+51, end=" ")
+    else:
+      print("X",end=" ")
+    if (repeticion + 1) % 10 == 0:
+      print()
+
+
+def comprar_entradas():
+  global ganancias_platinum
+  global ganancias_gold
+  global ganancias_silver
+  global contador_platinum
+  global contador_gold
+  global contador_silver
+
+  cantidad = int(input("Ingrese la cantidad de entradas a comprar (entre 1 y 3) \n"))
+  if(cantidad <= 0 or cantidad >= 4):
+    print("Error en la cantidad, debe ser entre 1 y 3")
+    return
+
+  print(cantidad)
+
+  for repeticion in range(cantidad):
+    print("Ubicaciones disponibles:")
+    mostrar_ubicaciones_disponibles()
+    ubicacion_valida = False
+    
+    while not ubicacion_valida:
+      ubicacion = int(input("Seleccione una ubicacion: \n"))
+      if ubicacion >= 1 and ubicacion <= 100: #condicion de ingreso
+
+        #Valor Platinum
+        if ubicacion <= 20 and validar_ubicacion(ubicacion):
+          entradas_platinum[ubicacion-1] = ingresar_rut()
+          ubicacion_valida = True
+          asistentes.append(entradas_platinum[ubicacion -1])
+          ganancias_platinum = ganancias_platinum + 120000
+          contador_platinum = contador_platinum + 1
+
+        #Valor Gold
+        elif ubicacion <= 50 and validar_ubicacion(ubicacion):
+          entradas_gold[ubicacion-21] = ingresar_rut()
+          ubicacion_valida = True
+          ganancias_gold = ganancias_gold + 80000
+          asistentes.append(entradas_gold[ubicacion -21])
+          contador_gold = contador_gold + 1
+
+        #Valor Silver
+        elif ubicacion <= 100 and validar_ubicacion(ubicacion):
+          entradas_silver[ubicacion-51] = ingresar_rut()
+          ubicacion_valida = True
+          ganancias_silver = ganancias_silver + 50000
+          asistentes.append(entradas_silver[ubicacion -51])
+          contador_silver = contador_silver + 1
+
+        if not ubicacion_valida:
+          print("Ubicacion no disponible, favor seleccione otra")
+    print("Operación realizada exitosamente")
+
+
+def validar_ubicacion(ubicacion):
+  ubicacion_valida=False
+  if ubicacion <=20:
+    if entradas_platinum[ubicacion-1] == "":
+      ubicacion_valida=True
+    return ubicacion_valida
+  if ubicacion <=50:
+    if entradas_gold[ubicacion-21] == "":
+      ubicacion_valida=True
+    return ubicacion_valida
+  if ubicacion <=100:
+    if entradas_silver[ubicacion-51] == "":
+      ubicacion_valida=True
+    return ubicacion_valida
+  return ubicacion_valida
+
+
+
+#Ingreso de rut
+def ingresar_rut():
+  run_valido = False
+  while not run_valido:
+    run = input("Ingrese el RUN sin Digito Verificador ni guiones: \n\t")
+    if(len(run) == 7 or len(run) == 8):
+      run_valido = True
+
+  return run
+
+def mostrar_asistentes():
+  asistentes.sort()  
+  print("Listado de asistentes")
+  for asistente in asistentes:
+    print(asistente)
+
+def mostrar_ganancias():
+  print ("Tipo Entrada\t\tCantidad\tTotal")
+  print("\nPlatinum $120.000\t", end=" ")
+  print (contador_platinum,"\t", end=" ")
+  print ("\t",ganancias_platinum,"\t", end=" ")
+
+  print("\nGold $80.000\t\t", end=" ")
+  print (contador_gold,"\t", end=" ")
+  print ("\t",ganancias_gold,"\t", end=" ")
+
+  print("\nSilver $50.000\t\t", end=" ")
+  print (contador_silver,"\t", end=" ")
+  print ("\t",ganancias_silver,"\t", end=" ")
+
+  print("\nTOTAL\t\t\t", end=" ")
+  print (contador_platinum + contador_gold + contador_silver,"\t", end=" ")
+  print ("\t",ganancias_platinum + ganancias_gold + ganancias_silver,"\t", end=" ")
+
+
+
+def inicio():
+  try:
+    nombre_vacio = False
+    while not nombre_vacio: 
+      nombre = input ("Ingrese su nombre\n")
+      if (nombre != ""):
+        nombre_vacio = True
+    apellido_vacio = False
+
+    while not apellido_vacio: 
+      apellido = input ("Ingrese su apellido\n")
+      if (apellido != ""):
+        apellido_vacio = True
+
+    while True:
+      mostrar_menu()
+      opcion = int(input("Ingrese opcion: \n"))
+      if opcion == 1:
+        comprar_entradas()
+      elif opcion == 2:
+        mostrar_ubicaciones_disponibles()
+      elif opcion == 3:
+        mostrar_asistentes()
+      elif opcion == 4:
+        mostrar_ganancias()
+      elif opcion == 5:
+        print(f"Gracias por usar el Sofware, {nombre} {apellido}", end=" ")
+        now = datetime.now()
+        print(now)
+        break
+  except:
+    print("Ha ocurrido un error")
+
+
+
+inicio()
